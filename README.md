@@ -25,7 +25,8 @@ Data Exploratory and analysis:
 
 Data exploratory is the most important part of the work flow for machine learning project as it is the first approach to understand the whole dataset and all the features including numerical and non-numerical, missing data, duplicate data, meaningful and meaningless. Since we will try the best to understand and apply all the useful features to the models later on, we would have to make ourself understand all the features that we have.
 
- 
+ ![image](https://github.com/monkey-d-luffy1/Attrition-analysis/assets/88392078/0b4f3307-628d-4c80-9c97-7a550bad4c86)
+
 Fig 4.1 Distribution of Target Variable
 
 
