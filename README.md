@@ -1,6 +1,4 @@
-# IBM-HR-employee-Attrition-Prediction-Study
-## Dataset source
-- https://www.kaggle.com/pavansubhasht/ibm-hr-analytics-attrition-dataset
+# Attrition-Prediction
 
 *In this project, we perform a complete machine learning work flow from data exploratory and feature engineering to build different machine learning models and evaluate model performances to predict if an employee will leave his/her current employer and analyze what features will mainly affect employee's attrition activity.*
 
