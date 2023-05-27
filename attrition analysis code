@@ -1,0 +1,400 @@
+
+# importing essential libraries for data analysis
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+%matplotlib inline
+pd.options.display.max_columns = None
+import warnings
+warnings.filterwarnings('ignore')
+
+# import dataset and take a brief look of the dataset
+df = pd.read_csv('1Employee-Attrition.csv')
+df.head()
+
+# helper function to get shape of the dataset
+def get_shape(df):
+print('Now there are', df.shape[0], 'rows and',df.shape[1],'columns in this dataset')
+
+# print out the shape of the dataset
+get_shape(df)
+
+# count unique values of each features
+df.nunique()
+
+# check missing data for each feature
+df.isnull().sum()
+
+# check datatype and other information for each feature
+df.info()
+
+# separate features into numerical and non numerical groups
+df.columns.to_series().groupby(df.dtypes).groups
+
+# check statistical distribution for numerical features
+df.describe().T
+
+
+
+# drop out features that give out useless information
+df = df.drop(columns = ['EmployeeNumber', 'EmployeeCount', 'StandardHours', 'Over18'])
+df.head()
+
+# check distribution for target variable
+sns.countplot(x = 'Attrition', data = df);
+plt.savefig('attrition.png')
+
+# visualization for numerical features
+fig, axss = plt.subplots(3,4, figsize=[15,10])
+sns.boxplot(x='Attrition', y ='DailyRate', data=df, ax=axss[0][0],palette="Blues")
+sns.boxplot(x='Attrition', y ='Age', data=df, ax=axss[0][1],palette="Blues")
+sns.boxplot(x='Attrition', y ='DistanceFromHome', data=df, ax=axss[0][2],palette="Blues")
+sns.boxplot(x='Attrition', y ='HourlyRate', data=df, ax=axss[0][3],palette="Blues")
+sns.boxplot(x='Attrition', y ='MonthlyIncome', data=df, ax=axss[1][0],palette="Blues")
+sns.boxplot(x='Attrition', y ='MonthlyRate', data=df, ax=axss[1][1],palette="Blues")
+sns.boxplot(x='Attrition', y ='NumCompaniesWorked', data=df, ax=axss[1][2],palette="Blues")
+sns.boxplot(x='Attrition', y ='TotalWorkingYears', data=df, ax=axss[1][3],palette="Blues")
+sns.boxplot(x='Attrition', y ='YearsAtCompany', data=df, ax=axss[2][0],palette="Blues")
+sns.boxplot(x='Attrition', y ='YearsInCurrentRole', data=df, ax=axss[2][1],palette="Blues")
+sns.boxplot(x='Attrition', y ='YearsSinceLastPromotion', data=df, ax=axss[2][2],palette="Blues")
+sns.boxplot(x='Attrition', y ='YearsWithCurrManager', data=df, ax=axss[2][3],palette="Blues")
+plt.tight_layout()
+plt.savefig('numerical_dist.png');
+
+# visualization for non numerical features
+fig,axss = plt.subplots(2,4, figsize=[15,10])
+sns.countplot(x='Attrition', hue='BusinessTravel', data=df, ax=axss[0][0])
+sns.countplot(x='Attrition', hue='Department', data=df, ax=axss[0][1])
+sns.countplot(x='Attrition', hue='Gender', data=df, ax=axss[0][2])
+sns.countplot(x='Attrition', hue='JobRole', data=df, ax=axss[0][3])
+sns.countplot(x='Attrition', hue='EducationField', data=df, ax=axss[1][0])
+sns.countplot(x='Attrition', hue='MaritalStatus', data=df, ax=axss[1][1])
+sns.countplot(x='Attrition', hue='OverTime', data=df, ax=axss[1][2])
+plt.tight_layout()
+plt.savefig('cate_dist.png');
+
+# tranform binary feature into 0 and 1
+df['Attrition'] = df['Attrition'].map({'Yes': 1, 'No': 0})
+df['OverTime'] = df['OverTime'].map({'Yes': 1, 'No': 0})
+
+# check correlation between numerical features and target variable
+corr_score = df[['Age', 'DailyRate', 'DistanceFromHome', 'Education',
+        'EnvironmentSatisfaction', 'HourlyRate', 'JobInvolvement', 'JobLevel',
+        'JobSatisfaction', 'MonthlyIncome', 'MonthlyRate', 'NumCompaniesWorked',
+        'PercentSalaryHike', 'PerformanceRating', 'RelationshipSatisfaction',
+        'StockOptionLevel', 'TotalWorkingYears', 'TrainingTimesLastYear',
+        'WorkLifeBalance', 'YearsAtCompany', 'YearsInCurrentRole',
+        'YearsSinceLastPromotion', 'YearsWithCurrManager', 'Attrition']].corr()
+corr_score
+
+
+
+# visualization of correlation relationships
+plt.figure(figsize=(15, 10))
+mask = np.triu(corr_score)
+sns.heatmap(corr_score,cmap="Oranges",annot = True, fmt = '.2f',mask = mask)
+plt.tight_layout()
+plt.savefig('corr.png');
+
+# Drop the target column and get a clean dataframe with features
+y = df['Attrition']
+df_clean = df.drop(columns = ['Attrition'])
+# apply one hot encoding to non numerical features
+df_clean = pd.get_dummies(df_clean, columns = ['BusinessTravel', 'Gender','MaritalStatus'], drop_first = True)
+df_clean = pd.get_dummies(df_clean)
+df_clean.head()
+
+# check the columns we have after feature engineering
+print(list(df_clean.columns))
+
+# check the shape for the new dataset
+get_shape(df_clean)
+
+# filter out features that needs to be standarized
+col_tobe_standard = ['Age', 'DailyRate', 'DistanceFromHome', 'Education', 'EnvironmentSatisfaction', 
+                   'HourlyRate', 'JobInvolvement', 'JobLevel', 'JobSatisfaction', 'MonthlyIncome', 
+                   'MonthlyRate', 'NumCompaniesWorked', 'PercentSalaryHike', 'PerformanceRating', 
+                   'RelationshipSatisfaction', 'StockOptionLevel', 'TotalWorkingYears', 'TrainingTimesLastYear', 
+                   'WorkLifeBalance', 'YearsAtCompany', 'YearsInCurrentRole', 'YearsSinceLastPromotion', 
+                   'YearsWithCurrManager']
+
+# standarization on numercial features so that all the numerical features are having the same type of normal distribution
+from sklearn.preprocessing import StandardScaler
+scaler = StandardScaler()
+for col in col_tobe_standard:
+df_clean[col] = df_clean[col].astype(float)
+df_clean[[col]] = scaler.fit_transform(df_clean[[col]])
+df_clean.head()
+
+# split dataset into training set and testing set with stratified sampling so that each dataset contains observations
+# for both exit and non exit employees
+from sklearn import model_selection
+X_train, X_test, y_train, y_test = model_selection.train_test_split(df_clean,
+                                                                    y,
+test_size=0.25,
+                                                                    stratify = y)  
+print('Training data has ' + str(X_train.shape[0]) + ' observation with ' + str(X_train.shape[1]) + ' features')
+print('Test data has ' + str(X_test.shape[0]) + ' observation with ' + str(X_test.shape[1]) + ' features')
+
+# build different machine learning models with the same random state if applicable
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.neural_network import MLPClassifier
+from sklearn.ensemble import GradientBoostingClassifier
+import xgboost as xgb
+from sklearn.model_selection import GridSearchCV
+from sklearn.metrics import classification_report,confusion_matrix,plot_confusion_matrix,roc_curve, roc_auc_score
+
+lr = LogisticRegression(random_state = 6)
+knn = KNeighborsClassifier()
+rf = RandomForestClassifier(random_state = 6)
+dt = DecisionTreeClassifier(random_state = 6)
+mlp = MLPClassifier(random_state = 6)
+xg = xgb.XGBClassifier(random_state = 6)
+
+# naive approach on each models without hyperparameter tuning
+model_list = [lr,knn,rf,dt,mlp,xg]
+score_res = []
+for model in model_list:
+    draft = model_selection.cross_val_score(model, X_train, y_train, cv = 5)
+score_res.append(draft)
+
+# print out naive approach performance
+model_names = ['Logistic Regression', 'KNN', 'Random Forest','DecisionTree','NeuralNetwork','XG Boost']
+idx = ['cv_1','cv_2','cv_3','cv_4','cv_5']
+df_accuracy = pd.DataFrame(np.array(score_res).T, columns = model_names, index = idx).round(decimals=3)
+print('='*60)
+print('The Score is listed below \n\n',df_accuracy)
+print('='*60)
+
+
+
+
+
+# visualize the performance of different machine learning models
+plt.figure(figsize=(10, 8))
+sns.boxplot(data = df_accuracy)
+plt.savefig('draft.png');
+
+# helper function to get best parameters from best model after grid search cross validation
+best_models = []
+def get_grid_res(gs):
+print("Best Score:", "{:.3f}".format(gs.best_score_))
+print("Best Parameters:")
+best_params = gs.best_params_
+    for k, v in best_params.items():
+print(k, ":", v)
+
+# setkfold number for k fold cross validation method
+kfold = model_selection.KFold(n_splits=10, random_state = None)
+
+# hyperparameter tuning for logistic regression
+lr_params = {'penalty':('l1', 'l2'), 
+          'C':(0.001, 0.005, 0.01, 0.05, 0.1, 0.5, 1, 5, 10)}
+
+# apply grid search on each hyperparameter and fit in with data
+grid_lr = GridSearchCV(lr, lr_params, cv= kfold)
+grid_lr.fit(X_train, y_train)
+lr_res = grid_lr.cv_results_
+
+# visualize the affect of different hyperparameters on performance
+sns.set_style('darkgrid')
+plt.figure(figsize=(10, 8))
+sns.scatterplot(x = 'param_C', y = 'mean_test_score',hue = 'param_penalty',data = lr_res)
+plt.xlabel('Parameter C',fontsize = 15)
+plt.ylabel('Estimator',fontsize = 15)
+plt.title('GridSearch Cross Validation Result',fontsize = 15)
+plt.legend(fontsize = 15)
+plt.savefig('LR.png');
+
+# apply helper function to get the best hyperparameter
+get_grid_res(grid_lr)
+best_lr_model = grid_lr.best_estimator_
+
+# append the best model to the list for other evalution
+best_models.append(('Logistic Regression', best_lr_model))
+
+# hyperparameter tuning for K nearest neighbors
+knn_params = {
+    'n_neighbors':[3,5,7,9,11,13,15,17,21,31,59,61,63] 
+}
+
+# apply grid search on each hyperparameter and fit in with data
+grid_knn = GridSearchCV(knn, knn_params, cv= kfold)
+grid_knn.fit(X_train, y_train)
+knn_res = grid_knn.cv_results_
+
+# visualize the affect of different hyperparameters on performance
+sns.set_style('darkgrid')
+plt.figure(figsize=(10, 8))
+sns.scatterplot(x = 'param_n_neighbors', y = 'mean_test_score',data = knn_res)
+plt.xlabel('Parameter K',fontsize = 15)
+plt.ylabel('Estimator',fontsize = 15)
+plt.title('GridSearch Cross Validation Result',fontsize = 15)
+plt.savefig('knn.png');
+
+# apply helper function to get the best hyperparameter
+get_grid_res(grid_knn)
+best_knn_model = grid_knn.best_estimator_
+
+# append the best model to the list for other evalution
+best_models.append(('K Nearest Neighbors',best_knn_model))
+
+# hyperparameter tuning for random forest
+params_rf = {
+    'n_estimators': [20,40,60,80],
+    'min_samples_split':[4,6,8],
+    'max_depth': [1, 5, 10, 15],
+    'max_features': ['sqrt', 'auto','log2']
+}
+grid_rf = GridSearchCV(rf,params_rf, cv=kfold)
+grid_rf.fit(X_train, y_train)
+
+
+# apply helper function to get the best hyperparameter
+get_grid_res(grid_rf)
+rf_res = grid_rf.cv_results_
+best_rf_model = grid_rf.best_estimator_
+
+# append the best model to the list for other evalution
+best_models.append(('Random Forest', best_rf_model))
+
+# hyperparameter tuning for decision tree
+params_dt = {
+    'max_depth':[1,5,10,15],
+    'min_samples_split':[2,4,6,8,10]
+}
+grid_dt = GridSearchCV(dt,params_dt, cv=kfold)
+grid_dt.fit(X_train, y_train)
+C
+best_dt_model = grid_dt.best_estimator_
+
+# append the best model to the list for other evalution
+best_models.append(('Decision Tree', best_dt_model))
+
+# hyperparameter tuning for multi layerperceptrons
+params_mlp = {
+    'hidden_layer_sizes': [(10,),(20,),(30,)],
+    'activation': ['tanh', 'relu'],
+    'alpha': [0.001, 0.01, 0.1]
+}
+grid_mlp = GridSearchCV(mlp,params_mlp, cv = kfold)
+grid_mlp.fit(X_train, y_train)
+
+# apply helper function to get the best hyperparameter
+get_grid_res(grid_mlp)
+best_mlp_model = grid_mlp.best_estimator_
+
+# append the best model to the list for other evalution
+best_models.append(('Neural Network', best_mlp_model))
+
+# hyperparameter tuning for extreme boosting tree aka xgboost
+params_xgb = {
+        'subsample': [0.4, 0.6, 0.8],
+        'max_depth': [1,5,10,15],
+        'n_estimators':[40,60,80],
+        'reg_alpha':[0.01, 0.05, 0.1, 0.5, 1, 5],
+        'reg_lambda':[0.01, 0.05, 0.1, 0.5, 1, 5],
+        'eta':[0.4,0.6,0.8],
+        'learning_rate':[0.1, 0.3, 0.5]
+        }
+from sklearn.model_selection import RandomizedSearchCV
+grid_xgb = RandomizedSearchCV(xg, params_xgb,cv = kfold,n_iter = 50)
+grid_xgb.fit(X_train, y_train)
+
+# apply helper function to get the best hyperparameter
+get_grid_res(grid_xgb)
+best_xgb_model = grid_xgb.best_estimator_
+
+# append the best model to the list for other evalution
+best_models.append(('Extreme Boosting Tree', best_xgb_model))
+
+# print out the list of optimized models
+for name,model in best_models:
+    print(name)
+
+
+# helper function to print out and visualize the evaluation result of each model 
+# confusion matrix, precison-recall and f1 score
+def plot_cm(models):
+sns.set_style('white')
+class_names = ['No','Yes']
+    for model_name, model in models:
+        cm = confusion_matrix(y_test,model.predict(X_test))
+tn = cm[0][0]
+fp = cm[0][1]
+fn = cm[1][0]
+tp = cm[1][1]
+accuracy  = (tp + tn) / (tp + fp + fn + tn + 0.0)
+        precision = tp / (tp + fp + 0.0)
+        recall = tp / (tp + fn + 0.0)
+        f1 = 2 / (( 1 / precision) + ( 1 / recall))
+plot_confusion_matrix(model, X_test, y_test,
+display_labels=class_names,
+cmap="Oranges")
+plt.title(model_name, fontsize = 15)
+plt.ylabel('Actual',fontsize = 15)
+plt.xlabel('Predicted\nAccuracy = {}\nPrecision = {}\nRecell = {}\nF1 = {}'
+.format((round(accuracy, 3)),round(precision, 3),round(recall, 3),round(f1, 3)), fontsize = 15)
+plot_cm(best_models)
+plt.savefig('cm.png')
+
+# visualize ROC curve for each optimized model
+result_table = pd.DataFrame(columns=['classifiers', 'fpr','tpr','auc'])
+for model_name, model in best_models:
+yproba = model.predict_proba(X_test)[::,1]
+
+fpr, tpr, _ = roc_curve(y_test,  yproba)
+auc = roc_auc_score(y_test, yproba)
+result_table = result_table.append({'classifiers':model_name,
+                                            'fpr':fpr, 
+                                            'tpr':tpr, 
+                                            'auc':auc}, ignore_index=True)
+
+# Set name of the classifiers as index labels
+result_table.set_index('classifiers', inplace=True)
+plt.figure(figsize=(8,6))
+for i in result_table.index:
+plt.plot(result_table.loc[i]['fpr'], 
+result_table.loc[i]['tpr'],
+             label="{}, AUC={:.3f}".format(i, result_table.loc[i]['auc']))
+plt.plot([0,1], [0,1], color='orange', linestyle='--')
+plt.xlabel("False Positive Rate", fontsize=15)
+plt.ylabel("True Positive Rate", fontsize=15)
+plt.title('ROC Curve Analysis',fontsize=15)
+plt.legend(prop={'size':13}, loc='lower right')
+plt.savefig('ROC.png');
+
+# helper function to visualize feature importance from random forest and LASSO
+def imp_df(column_names, importances):
+    df = pd.DataFrame({'feature': column_names,
+                       'feature_importance': importances}).sort_values('feature_importance', ascending = False)\
+.reset_index(drop = True)
+    return df
+
+def var_imp_plot(imp_df, title):
+imp_df.columns = ['feature', 'feature_importance']
+sns.barplot(x = 'feature_importance', y = 'feature', data = imp_df, orient = 'h', color = 'blue')
+plt.title(title, fontsize = 20)
+plt.xticks(fontsize = 15)
+plt.yticks(fontsize = 15)
+plt.xlabel(imp_df.columns[1], fontsize = 20)
+plt.ylabel(imp_df.columns[0], fontsize = 20)
+plt.tight_layout()
+base_imp = imp_df(X_train.columns, best_rf_model.feature_importances_)
+plt.figure(figsize=(15, 15))
+var_imp_plot(base_imp, 'Random Forest Feature Importance')
+plt.savefig('feature_importance.png')
+
+# build a LASSO model for feature selection
+from sklearn.linear_model import LassoCV
+reg = LassoCV()
+reg.fit(X_train, y_train)
+coef = pd.DataFrame(reg.coef_, index = X_train.columns)
+coef = imp_df(X_train.columns, reg.coef_)
+plt.figure(figsize=(15, 15))
+var_imp_plot(coef, 'LASSO Feature importance')
+plt.savefig('L1_feature_importance.png');
