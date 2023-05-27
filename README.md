@@ -55,7 +55,7 @@ Here are the graphs with different hyperparameter affect the performance of logi
 
 ![image](https://github.com/monkey-d-luffy1/Attrition-analysis/assets/88392078/2024fa88-bcb9-4cf5-b98f-b69bcabc0d73)
 ![image](https://github.com/monkey-d-luffy1/Attrition-analysis/assets/88392078/ef87a501-5b98-4d03-ae86-c3fdf40c0242)
-Grid Search Cross Validation Result
+
 
 K fold cross validation is the method we use to check the performance of the model on different dataset, so basically we split our dataset into trainig set and testing set, and we split training set into same different portions, and we apply each portion to our model and get the mean score of the model performance. Then we will apply use our testing set to verify the accuracy of our predictions.
 
@@ -69,12 +69,12 @@ There are different metrics to evaluate a model's performance. For classificatio
 ![image](https://github.com/monkey-d-luffy1/Attrition-analysis/assets/88392078/c0b2c9d9-48f8-44f9-8274-edbff174203f)
 ![image](https://github.com/monkey-d-luffy1/Attrition-analysis/assets/88392078/79112efd-ed80-4058-b788-6a223977da76)
 ![image](https://github.com/monkey-d-luffy1/Attrition-analysis/assets/88392078/768d2101-049b-4854-8090-9e40f3ce8788)
-Metrics score
+
 
 ROC analysis is another metric to evaluation how well the model could separate the true label and false label accurately. 
 
 ![image](https://github.com/monkey-d-luffy1/Attrition-analysis/assets/88392078/209614fb-eb54-4fa3-8a46-21372c15f5a4)
-ROC Curve Analysis
+
 
 AUC a.k.a area under curve, the higher the value is the less randomness the model will generate for the correct true or false label here is yes or no. The ideal AUC will be 1 which will fill up the whole square and worst is the triangle that goes diagonal across the square.
 
