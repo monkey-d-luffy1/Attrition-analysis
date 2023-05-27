@@ -25,47 +25,37 @@ Data Exploratory and analysis:
 
 Data exploratory is the most important part of the work flow for machine learning project as it is the first approach to understand the whole dataset and all the features including numerical and non-numerical, missing data, duplicate data, meaningful and meaningless. Since we will try the best to understand and apply all the useful features to the models later on, we would have to make ourself understand all the features that we have.
 
- ![image](https://github.com/monkey-d-luffy1/Attrition-analysis/assets/88392078/0b4f3307-628d-4c80-9c97-7a550bad4c86)
-
-Fig 4.1 Distribution of Target Variable
-
+![image](https://github.com/monkey-d-luffy1/Attrition-analysis/assets/88392078/0b4f3307-628d-4c80-9c97-7a550bad4c86)
 
 As we could see the distribution of our target variable is imbalanced for the binary variable yes and no.
 
-
- 
-Fig 4.2 Distribution of Numerical Features
+![image](https://github.com/monkey-d-luffy1/Attrition-analysis/assets/88392078/465b0053-2b23-4894-a145-60cf004c20ed)
 
 This is the distribution of our numerical features. We have preprocessed all the numerical features so there are no missing data or duplicate data. From the exploratory, it looks like exit employee's age and working time with his current position give out some signals of attrition as well as daily rate which refers to paystub.
 
+![image](https://github.com/monkey-d-luffy1/Attrition-analysis/assets/88392078/775f085b-f229-47d4-b3ec-1377df132c15)
  
-Fig 4.3 Distribution of Non-Numerical Features
 This is the distribution of non-numerical features. Even though all the distribution is imbalanced, we could still tell that too much over time work definitely will drive away a loyal employee. Traveling and marital status will also be considered as factors of the effect.
 
-4.2 Feature Engineering:
+Feature Engineering:
 
- 
-Fig 4.4 Correlation Matrix
-
+![image](https://github.com/monkey-d-luffy1/Attrition-analysis/assets/88392078/60b9dbb2-2935-4a17-9756-5b4606469cb4)
 
 From this matrix we could be able to see correlations between each feature and between features and target variable. For correlation score > 0.5, we would consider the two features are correlated. For non-numerical features, we applied one hot encoding and transform them into numerical.
 
+Model Training:
 
-
-
-
-4.3 Model Training:
-
- 
-Fig 4.5 Naive Approach
+![image](https://github.com/monkey-d-luffy1/Attrition-analysis/assets/88392078/ff10afde-7030-44e6-be98-83ae4c5bf3b4)
 
 Naive approach is to apply features to the models without hyperparameter tuning. We could roughly get the result of performance of each model. Here we use the linear model, tree-based model, ensemble learning model and deep learning model.
 
 Hyperparameter Tuning:
 
 Here are the graphs with different hyperparameter affect the performance of logistic regression and k nearest neighbors.
-  
-Fig 4.6 Grid Search Cross Validation Result
+
+![image](https://github.com/monkey-d-luffy1/Attrition-analysis/assets/88392078/2024fa88-bcb9-4cf5-b98f-b69bcabc0d73)
+![image](https://github.com/monkey-d-luffy1/Attrition-analysis/assets/88392078/ef87a501-5b98-4d03-ae86-c3fdf40c0242)
+Grid Search Cross Validation Result
 
 K fold cross validation is the method we use to check the performance of the model on different dataset, so basically we split our dataset into trainig set and testing set, and we split training set into same different portions, and we apply each portion to our model and get the mean score of the model performance. Then we will apply use our testing set to verify the accuracy of our predictions.
 
@@ -73,33 +63,30 @@ Model Evaluation:
 
 There are different metrics to evaluate a model's performance. For classification problem, which is what we tried to solve in this project, accuracy is one of the metrics that we will look at. Beside accuracy, precision and recall is another metric that we need to pay more attention especially for imbalanced variable. Assuming we only have 1 employee exit in our dataset and we predict everyone is staying, then we will have a model with accuracy 99% which still cannot be able to help us to find out the employee who would like to exit. So, precision recall and f1 score will the metric for our evaluation. And to better evaluate and visualize the result of precision and recall, we use confusion matrix graph with labels of actual and prediction.
 
-      
-Fig 4.7 Metrics score
-
+![image](https://github.com/monkey-d-luffy1/Attrition-analysis/assets/88392078/8a8f505b-be9b-4780-a9e8-cb9223a37665)
+![image](https://github.com/monkey-d-luffy1/Attrition-analysis/assets/88392078/88645682-60d2-43d9-843c-b5fd839ee637)
+![image](https://github.com/monkey-d-luffy1/Attrition-analysis/assets/88392078/84c814ca-d2ff-4f6e-a66b-29f56c622fc5)
+![image](https://github.com/monkey-d-luffy1/Attrition-analysis/assets/88392078/c0b2c9d9-48f8-44f9-8274-edbff174203f)
+![image](https://github.com/monkey-d-luffy1/Attrition-analysis/assets/88392078/79112efd-ed80-4058-b788-6a223977da76)
+![image](https://github.com/monkey-d-luffy1/Attrition-analysis/assets/88392078/768d2101-049b-4854-8090-9e40f3ce8788)
+Metrics score
 
 ROC analysis is another metric to evaluation how well the model could separate the true label and false label accurately. 
 
- 
-Fig 4.8 ROC Curve Analysis
+![image](https://github.com/monkey-d-luffy1/Attrition-analysis/assets/88392078/209614fb-eb54-4fa3-8a46-21372c15f5a4)
+ROC Curve Analysis
 
 AUC a.k.a area under curve, the higher the value is the less randomness the model will generate for the correct true or false label here is yes or no. The ideal AUC will be 1 which will fill up the whole square and worst is the triangle that goes diagonal across the square.
 
-4.4 Feature Importance:
+Feature Importance:
 
 This is the most important analysis that gained from random forest and LASSO aka linear model with regularization. The feature importance reveals how important each feature is and how it will affect the performance of the model.
 
+![image](https://github.com/monkey-d-luffy1/Attrition-analysis/assets/88392078/81095163-b9c5-4238-a13d-c0d4d824cd74) 
+Random Forest Feature Importance
 
-
-
-
-
-
- 
-Fig 4.9 Random Forest Feature Importance
-
- 
-
-Fig 4.10 LASSO Feature Importance 
+![image](https://github.com/monkey-d-luffy1/Attrition-analysis/assets/88392078/11c1de43-25ed-49ef-9c18-5991ec0f4562)
+LASSO Feature Importance 
 
 CONCLUSION:
 
